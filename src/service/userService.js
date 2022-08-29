@@ -5,8 +5,11 @@ let updateUserService = async (id, data) => {
     try {
         if (!id || !data) {
             return ({
-                errCode: 1,
-                errMessage: 'Missing parameter'
+                status: 404,
+                message: {
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                }
             })
         }
 
@@ -14,26 +17,34 @@ let updateUserService = async (id, data) => {
             if (id === data.id || data.isAdmin === true) {
                 const salt = await bcrypt.genSalt(10);
                 data.password = await bcrypt.hash(data.password, salt);
-                let updateUser = await User.findByIdAndUpdate(
+                let updateUser = await User.findByIdAndUpdate(          
                     id,
                     { $set: data },
                     { new: true }
                 );
                 if (updateUser) {
                     return ({
-                        errCode: 0,
-                        errMessage: 'Account has been update'
+                        status: 200,
+                        message: {
+                            errCode: 0,
+                            errMessage: 'Account has been update'
+                        }
                     })
                 } else {
                     return ({
-                        errCode: 2,
-                        errMessage: 'user not found'
+                        status: 400,
+                        message: {
+                            errCode: 2,
+                            errMessage: 'user not found'
+                        }
                     })
                 }
             } else {
                 return ({
-                    errCode: 2,
-                    errMessage: 'You can update only your account!'
+                    message: {
+                        errCode: 2,
+                        errMessage: 'You can update only your account!'
+                    }
                 })
             }
     } catch (error) {
@@ -41,33 +52,104 @@ let updateUserService = async (id, data) => {
     }
 }
 
-let deleteUserUserService = async (id) => {
-    console.log('ok 2')
+let deleteUserService = async (id) => {
     try {
         if (!id) {
             return ({
-                errCode: 1,
-                errMessage: 'Missing parameter'
+                status: 400,
+                message: {
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                }
             })
         }
         else {
             await User.findByIdAndDelete(id);
             return ({
-                errCode: 0,
-                errMessage: 'user has been deleted'
+                status: 200,
+                message: {
+                    errCode: 0,
+                    errMessage: 'user has been deleted'
+                }
             })
         }
     } catch (error) {
         return error
     }
 }
-let getUserService = (id) => {
+let getUserService = async (id) => {
     try {
+        if (!id) {
+            return ({
+                status: 400,
+                message: {
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                }
+            })
+        }
+        else {
+            let user = await User.findById(id);
+            if (!user) {
+                return ({
+                    status: 400,
+                    message: {
+                        errCode: 2,
+                        errMessage: 'User not found'
+                    }
+                })
+            } else {
+                let { password, updatedAt, ...others } = user._doc
+                return ({
+                    status: 200,
+                    message: {
+                        errCode: 0,
+                        data: others
+                    }
+                })
+            }
+        }
+    } catch (error) {
+        return error
+    }
+}
 
+let getAllUserService = async () => {
+    try {
+        if (!id) {
+            return ({
+                status: 400,
+                message: {
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                }
+            })
+        }
+        else {
+            let user = await User.find();
+            if (!user) {
+                return ({
+                    status: 400,
+                    message: {
+                        errCode: 2,
+                        errMessage: 'User not found'
+                    }
+                })
+            } else {
+                let { password, updatedAt, ...others } = user._doc
+                return ({
+                    status: 200,
+                    message: {
+                        errCode: 0,
+                        data: others
+                    }
+                })
+            }
+        }
     } catch (error) {
         return error
     }
 }
 module.exports = {
-    updateUserService, deleteUserUserService, getUserService
+    updateUserService, deleteUserService, getUserService, getAllUserService
 }

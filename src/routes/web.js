@@ -10,7 +10,8 @@ const initAPIRoute = (app) => {
 
     router.put('/api/update-user/:id', middlewareController.verifyUser, userController.updateUser)
     router.delete('/api/delete-user/:id', middlewareController.verifyUser, userController.deleteUser)
-    router.get('/api/get-user/:id', userController.getUser)
+    router.get('/api/get-user/:id', middlewareController.verifyUser, userController.getUser)
+    router.get('/api/get-all-user', middlewareController.verifyAdmin, userController.getAllUser)
 
     return app.use('/', router)
 

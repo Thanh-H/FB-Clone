@@ -4,12 +4,16 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
 dotenv.config();
 const salt = bcrypt.genSaltSync(10);
+
 let registerService = async (data) => {
     try {
         if (!data.userName || !data.password || !data.email) {
             return ({
-                errCode: 1,
-                errMessage: 'missing parameter'
+                status: 401,
+                message: {
+                    errCode: 1,
+                    errMessage: 'missing parameter'
+                }
             })
         }
         else {
@@ -21,8 +25,11 @@ let registerService = async (data) => {
             });
             await newUser.save();
             return ({
-                errCode: 0,
-                errMessage: 'User has been created!'
+                status: 200,
+                message: {
+                    errCode: 0,
+                    errMessage: 'User has been created!'
+                }
             })
         }
     } catch (err) {
@@ -30,12 +37,17 @@ let registerService = async (data) => {
     }
 }
 
+////////////////////////////////////////////////////////////login
+
 let loginService = async (data) => {
     try {
         if (!data.password || !data.email) {
             return ({
-                errCode: 1,
-                errMessage: 'missing parameter'
+                status: 404,
+                message: {
+                    errCode: 1,
+                    errMessage: 'missing parameter'
+                }
             })
         }
         else {
@@ -44,31 +56,38 @@ let loginService = async (data) => {
             })
             if (!user) {
                 return ({
-                    errCode: 2,
-                    errMessage: 'user not found'
+                    status: 404,
+                    message: {
+                        errCode: 2,
+                        errMessage: 'user not found'
+                    }
                 })
             }
             else {
                 let validPassword = await bcrypt.compare(data.password, user.password)
                 if (!validPassword) {
                     return ({
-                        errCode: 3,
-                        errMessage: 'wrong password'
+                        status: 400,
+                        message: {
+                            errCode: 3,
+                            errMessage: 'wrong password'
+                        }
                     })
                 }
                 if (validPassword && user) {
+
                     let accessToken = jwt.sign(
-                        {
-                            id: user.id,
-                            isAdmin: user.isAdmin
-                        },
+                        { id: user.id, isAdmin: user.isAdmin },
                         process.env.JWT_ACCESS_KEY,
-                        { expiresIn: "30d" }
                     )
+
                     let { password, ...others } = user._doc
                     return ({
-                        errCode: 0,
-                        data: others, accessToken
+                        status: 200,
+                        message: {
+                            errCode: 0,
+                            data: others, accessToken
+                        }
                     })
                 }
             }
@@ -77,7 +96,6 @@ let loginService = async (data) => {
         return error
     }
 }
-
 
 
 
