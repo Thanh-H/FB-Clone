@@ -4,9 +4,10 @@ dotenv.config()
 
 
 let verifyTocken = (req, res, next) => {
-    let token = req.headers.token;
+    let token = req.body.accessToken;
+
     if (!token) {
-        return res.status(401).json("your are not authenticated")
+        return res.status(401).json("missing token")
     }
     if (token) {
         let accessToken = token.split(' ')[1];
@@ -28,7 +29,6 @@ let verifyTocken = (req, res, next) => {
 let verifyAdmin = (req, res, next) => {
     verifyTocken(req, res, () => {
         if (req.user.isAdmin === true) {
-            console.log('may la admin')
             next();
         }
         else {
@@ -40,12 +40,13 @@ let verifyAdmin = (req, res, next) => {
 
 let verifyUser = (req, res, next) => {
     verifyTocken(req, res, () => {
+        console.log(req.query, req.user.id)
         if (req.user.isAdmin === true || req.params.id === req.user.id) {
             next();
 
         }
         else {
-            return res.status(403).json("your are not authenticated")
+            return res.status(403).json("your are not authenticated ss")
         }
     }
     )

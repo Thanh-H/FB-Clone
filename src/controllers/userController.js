@@ -2,7 +2,7 @@ import userService from "../service/userService"
 
 let updateUser = async (req, res) => {
     try {
-        let id = req.params.id
+        let id = req.body.id
         let data = req.body
         let message = await userService.updateUserService(id, data)
         return res.status(message.status).json(message.message)
@@ -53,6 +53,20 @@ let getAllUser = async (req, res) => {
         })
     }
 }
+
+let updateUserByAdmin = async (req, res) => {
+    try {
+
+        let message = await userService.updateUserByAdminService(req.body)
+        return res.status(message.status).json(message.message)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: 'error from server'
+        })
+    }
+}
 module.exports = {
-    updateUser, deleteUser, getUser, getAllUser
+    updateUser, deleteUser, getUser, getAllUser, updateUserByAdmin
 }

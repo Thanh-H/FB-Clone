@@ -17,20 +17,44 @@ let registerService = async (data) => {
             })
         }
         else {
-            let hash = bcrypt.hashSync(data.password, salt);
-            let newUser = new User({
-                userName: data.userName,
-                email: data.email,
-                password: hash,
-            });
-            await newUser.save();
-            return ({
-                status: 200,
-                message: {
-                    errCode: 0,
-                    errMessage: 'User has been created!'
-                }
+            let user = await User.findOne({
+                email: data.email
             })
+            if (user) {
+                return ({
+                    status: 401,
+                    message: {
+                        errCode: 2,
+                        errMessage: 'email already exists please try another email'
+                    }
+                })
+            } else {
+                let hash = bcrypt.hashSync(data.password, salt);
+                if (data.role) {
+                    let newUser = new User({
+                        userName: data.userName,
+                        email: data.email,
+                        password: hash,
+                        isAdmin: data.role
+                    });
+                    await newUser.save();
+                } else {
+                    let newUser = new User({
+                        userName: data.userName,
+                        email: data.email,
+                        password: hash,
+                    });
+                    await newUser.save();
+                }
+
+                return ({
+                    status: 200,
+                    message: {
+                        errCode: 0,
+                        errMessage: 'User has been created!'
+                    }
+                })
+            }
         }
     } catch (err) {
         return (err)
@@ -86,7 +110,7 @@ let loginService = async (data) => {
                         status: 200,
                         message: {
                             errCode: 0,
-                            data: others, accessToken
+                            data: { ...others, accessToken }
                         }
                     })
                 }
@@ -97,9 +121,42 @@ let loginService = async (data) => {
     }
 }
 
-
+let logoutService = async (id) => {
+    try {
+        if (!id) {
+            return ({
+                status: 400,
+                message: {
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                }
+            })
+        } else {
+            let user = await User.findById(id)
+            if (!user) {
+                return ({
+                    status: 400,
+                    message: {
+                        errCode: 2,
+                        errMessage: 'User not found'
+                    }
+                })
+            } else {
+                return ({
+                    status: 200,
+                    message: {
+                        errCode: 0,
+                        errMessage: 'logout succeed!'
+                    }
+                })
+            }
+        }
+    } catch (error) {
+        return error
+    }
+}
 
 
 module.exports = {
-    registerService, loginService
+    registerService, loginService, logoutService
 }

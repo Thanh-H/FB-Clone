@@ -17,12 +17,16 @@ let register = async (req, res) => {
 let login = async (req, res) => {
     try {
         let message = await authService.loginService(req.body)
-        res.cookie("refreshToken", message.refreshToken, {
-            httpOnly: true,
-            secure: false,
-            path: "/",
-            sameSite: "strict",
-        });
+        if (message.message.data && message.message.data.accessToken) {
+            let accessToken = ''
+            accessToken = message.message.data.accessToken
+            res.cookie("Token", accessToken, {
+                httpOnly: true,
+                secure: false,
+                path: "/",
+                sameSite: "strict",
+            });
+        }
         res.status(message.status).json(message.message)
     } catch (error) {
         console.log(error)
@@ -34,6 +38,19 @@ let login = async (req, res) => {
 
 }
 
+let logout = async (req, res) => {
+    try {
+        let message = await authService.logoutService(req.params.id)
+        return res.status(message.status).json(message.message)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            errCode: "-1",
+            errMessage: "error from sever"
+        })
+    }
+}
+
 module.exports = {
-    register, login
+    register, login, logout
 }
