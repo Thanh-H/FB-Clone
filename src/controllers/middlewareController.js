@@ -5,7 +5,6 @@ dotenv.config()
 
 let verifyTocken = (req, res, next) => {
     let token = req.body.accessToken;
-
     if (!token) {
         return res.status(401).json("missing token")
     }

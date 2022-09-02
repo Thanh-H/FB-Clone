@@ -2,6 +2,7 @@ import express from 'express';
 import authController from '../controllers/authController'
 import userController from "../controllers/userController"
 import middlewareController from '../controllers/middlewareController'
+import productController from '../controllers/productController'
 let router = express.Router();
 
 const initAPIRoute = (app) => {
@@ -15,8 +16,11 @@ const initAPIRoute = (app) => {
     router.get('/api/get-all-user', userController.getAllUser)
     router.put('/api/update-userByAdmin/', userController.updateUserByAdmin)
 
+    router.post('/api/create-new-product', productController.createNewProduct)
+    router.get('/api/get-all-products', productController.getAllProducts)
+    router.delete('/api/delete-product/:id', productController.deleteProduct)
+
     return app.use('/', router)
 
 }
-
 export default initAPIRoute
