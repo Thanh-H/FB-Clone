@@ -111,30 +111,21 @@ let getProductByIdService = async (id) => {
     try {
         if (!id) {
             return ({
-                status: 400,
-                message: {
-                    errCode: 1,
-                    errMessage: 'Missing parameter'
-                }
+                errCode: 1,
+                errMessage: 'Missing parameter'
             })
         }
         else {
             let product = await Product.findById(id);
             if (!product) {
                 return ({
-                    status: 400,
-                    message: {
-                        errCode: 2,
-                        errMessage: 'Product not found'
-                    }
+                    errCode: 2,
+                    errMessage: 'Product not found'
                 })
             } else {
                 return ({
-                    status: 200,
-                    message: {
-                        errCode: 0,
-                        data: product
-                    }
+                    errCode: 0,
+                    data: product
                 })
             }
         }
