@@ -19,7 +19,8 @@ const initAPIRoute = (app) => {
     router.post('/api/create-new-product', productController.createNewProduct)
     router.get('/api/get-all-products', productController.getAllProducts)
     router.delete('/api/delete-product/:id', productController.deleteProduct)
-
+    router.get('./api/get-product-by-id/:id', productController.getProductById)
+    router.put('/api/update-product-by-id/', productController.updateProductById)
     return app.use('/', router)
 
 }

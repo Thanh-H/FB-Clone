@@ -20,19 +20,19 @@ let createNewProductService = async (data) => {
                     })
                 }
                 else {
-                    let newProducet = await new Product({
+                    let newProduct = await new Product({
                         productType: data.productType,
                         productTitle: data.productTitle,
                         productCode: data.productCode,
                         arrImage: data.arrImage,
                         currentPrice: data.currentPrice,
                         oldPrice: data.oldPrice,
-                        arrSize: data.arrSize,
+                        arrSize: data.arrSize.split(","),
                         contentHTML: data.contentHTML,
                         contentMarkdown: data.contentMarkdown,
                         inStock: data.inStock
                     })
-                    await newProducet.save()
+                    await newProduct.save()
                     return ({
                         errCode: 0,
                         errMessage: 'New product has been created!'
@@ -40,19 +40,19 @@ let createNewProductService = async (data) => {
                 }
 
             } else {
-                let newProducet = await new Product({
+                let newProduct = await new Product({
                     productType: data.productType,
                     productTitle: data.productTitle,
                     productCode: data.productCode,
                     arrImage: data.arrImage,
                     currentPrice: data.currentPrice,
                     oldPrice: data.oldPrice,
-                    arrSize: data.arrSize,
+                    arrSize: data.arrSize.split(","),
                     contentHTML: data.contentHTML,
                     contentMarkdown: data.contentMarkdown,
                     inStock: data.inStock
                 })
-                await newProducet.save()
+                await newProduct.save()
                 return ({
                     errCode: 0,
                     errMessage: 'New product has been created!'
@@ -60,7 +60,9 @@ let createNewProductService = async (data) => {
             }
 
     } catch (error) {
+        console.log(error)
         return error
+
     }
 
 }
@@ -105,7 +107,90 @@ let deleteProductService = async (id) => {
     }
 }
 
+let getProductByIdService = async (id) => {
+    try {
+        if (!id) {
+            return ({
+                status: 400,
+                message: {
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                }
+            })
+        }
+        else {
+            let product = await Product.findById(id);
+            if (!product) {
+                return ({
+                    status: 400,
+                    message: {
+                        errCode: 2,
+                        errMessage: 'Product not found'
+                    }
+                })
+            } else {
+                return ({
+                    status: 200,
+                    message: {
+                        errCode: 0,
+                        data: product
+                    }
+                })
+            }
+        }
+    } catch (error) {
+        return error
+    }
+}
+
+let updateProductByIdService = async (data) => {
+    try {
+        if (!data) {
+            return ({
+                errCode: 1,
+                errMessage: 'Missing parameter!'
+            })
+        }
+        else {
+            let product = await Product.findById(data.id)
+            if (!product) {
+                return ({
+                    errCode: 2,
+                    errMessage: 'Product not found!'
+                })
+            }
+            else {
+
+                let updateProduct = await Product.findByIdAndUpdate(data.id,
+                    {
+                        productType: data.productType,
+                        productTitle: data.productTitle,
+                        productCode: data.productCode,
+                        arrImage: data.arrImage,
+                        currentPrice: data.currentPrice,
+                        oldPrice: data.oldPrice,
+                        arrSize: data.arrSize.split(","),
+                        contentHTML: data.contentHTML,
+                        contentMarkdown: data.contentMarkdown,
+                        inStock: data.inStock
+                    },
+                    { new: true })
+                if (updateProduct) {
+                    return ({
+                        errCode: 0,
+                        errMessage: "Product has been update"
+                    })
+                }
+
+
+            }
+        }
+    } catch (error) {
+        console.log(error)
+        return (error)
+    }
+}
 module.exports = {
     createNewProductService,
-    getAllProductsService, deleteProductService
+    getAllProductsService, deleteProductService, getProductByIdService, updateProductByIdService
 }
