@@ -37,7 +37,6 @@ let deleteProduct = async (req, res) => {
     }
 }
 let getProductById = async (req, res) => {
-    console.log(req.params.id)
     try {
         let message = await productService.getProductByIdService(req.params.id)
         return res.status(200).json(message)

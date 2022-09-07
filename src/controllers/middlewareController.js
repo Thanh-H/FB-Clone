@@ -39,7 +39,6 @@ let verifyAdmin = (req, res, next) => {
 
 let verifyUser = (req, res, next) => {
     verifyTocken(req, res, () => {
-        console.log(req.query, req.user.id)
         if (req.user.isAdmin === true || req.params.id === req.user.id) {
             next();
 

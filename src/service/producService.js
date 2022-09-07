@@ -22,12 +22,14 @@ let createNewProductService = async (data) => {
                 else {
                     let newProduct = await new Product({
                         productType: data.productType,
+                        subProductType: data.subProductType,
                         productTitle: data.productTitle,
                         productCode: data.productCode,
                         arrImage: data.arrImage,
                         currentPrice: data.currentPrice,
                         oldPrice: data.oldPrice,
                         arrSize: data.arrSize.split(","),
+                        arrColor: data.arrColor.split(","),
                         contentHTML: data.contentHTML,
                         contentMarkdown: data.contentMarkdown,
                         inStock: data.inStock
@@ -42,12 +44,14 @@ let createNewProductService = async (data) => {
             } else {
                 let newProduct = await new Product({
                     productType: data.productType,
+                    subProductType: data.subProductType,
                     productTitle: data.productTitle,
                     productCode: data.productCode,
                     arrImage: data.arrImage,
                     currentPrice: data.currentPrice,
                     oldPrice: data.oldPrice,
                     arrSize: data.arrSize.split(","),
+                    arrColor: data.arrColor.split(","),
                     contentHTML: data.contentHTML,
                     contentMarkdown: data.contentMarkdown,
                     inStock: data.inStock
@@ -155,12 +159,14 @@ let updateProductByIdService = async (data) => {
                 let updateProduct = await Product.findByIdAndUpdate(data.id,
                     {
                         productType: data.productType,
+                        subProductType: data.subProductType,
                         productTitle: data.productTitle,
                         productCode: data.productCode,
                         arrImage: data.arrImage,
                         currentPrice: data.currentPrice,
                         oldPrice: data.oldPrice,
                         arrSize: data.arrSize.split(","),
+                        arrColor: data.arrColor.split(","),
                         contentHTML: data.contentHTML,
                         contentMarkdown: data.contentMarkdown,
                         inStock: data.inStock
