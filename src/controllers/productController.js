@@ -2,7 +2,7 @@ import productService from '../service/producService'
 
 let createNewProduct = async (req, res) => {
     try {
-        let message = await productService.createNewProductService(req.body)
+        let message = await productService.createNewProductService(req.body.data)
         return res.status(200).json(message)
     } catch (error) {
         console.log(error)
@@ -51,7 +51,7 @@ let getProductById = async (req, res) => {
 
 let updateProductById = async (req, res) => {
     try {
-        let message = await productService.updateProductByIdService(req.body)
+        let message = await productService.updateProductByIdService(req.body.data)
         return res.status(200).json(message)
     } catch (error) {
         console.log(error)

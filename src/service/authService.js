@@ -67,7 +67,7 @@ let loginService = async (data) => {
     try {
         if (!data.password || !data.email) {
             return ({
-                status: 404,
+                status: 200,
                 message: {
                     errCode: 1,
                     errMessage: 'missing parameter'
@@ -80,7 +80,7 @@ let loginService = async (data) => {
             })
             if (!user) {
                 return ({
-                    status: 404,
+                    status: 200,
                     message: {
                         errCode: 2,
                         errMessage: 'user not found'
@@ -91,7 +91,7 @@ let loginService = async (data) => {
                 let validPassword = await bcrypt.compare(data.password, user.password)
                 if (!validPassword) {
                     return ({
-                        status: 400,
+                        status: 200,
                         message: {
                             errCode: 3,
                             errMessage: 'wrong password'

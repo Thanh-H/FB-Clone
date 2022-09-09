@@ -17,17 +17,17 @@ const initAPIRoute = (app) => {
     router.get('/api/get-all-user', userController.getAllUser)
     router.put('/api/update-userByAdmin/', userController.updateUserByAdmin)
 
-    router.post('/api/create-new-product', productController.createNewProduct)
+    router.post('/api/create-new-product', middlewareController.verifyAdmin, productController.createNewProduct)
     router.get('/api/get-all-products', productController.getAllProducts)
-    router.delete('/api/delete-product/:id', productController.deleteProduct)
+    router.delete('/api/delete-product/:id', middlewareController.verifyAdmin, productController.deleteProduct)
     router.get('/api/get-product-by-id/:id', productController.getProductById)
-    router.put('/api/update-product-by-id/', productController.updateProductById)
+    router.put('/api/update-product-by-id/', middlewareController.verifyAdmin, productController.updateProductById)
 
     router.post('/api/create-new-order', orderController.createNewOrder)
     router.get('/api/get-all-orders', orderController.getAllOrders)
-    router.put('/api/confirm-order', orderController.confirmOrder)
-    router.put('/api/cancel-order', orderController.cancelOrder)
-    router.delete('/api/delete-order/:id', orderController.deleteOrder)
+    router.put('/api/confirm-order', middlewareController.verifyAdmin, orderController.confirmOrder)
+    router.put('/api/cancel-order', middlewareController.verifyAdmin, orderController.cancelOrder)
+    router.delete('/api/delete-order/:id', middlewareController.verifyAdmin, orderController.deleteOrder)
     return app.use('/', router)
 
 }
